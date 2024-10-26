@@ -1,0 +1,7 @@
+export const BookList = () => {
+	return (
+		<div className="app-block book-list">
+			<h2>BookList</h2>
+		</div>
+	)
+}
