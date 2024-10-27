@@ -17,7 +17,8 @@ export const BookForm = () => {
 			const book = {
 				title,
 				author,
-				id: uuidv4()
+				id: uuidv4(),
+				isFavorite: false
 			}
 			dispatch(addBook(book))
 			setTitle("")
@@ -36,6 +37,7 @@ export const BookForm = () => {
 
 		const book = {
 			...randomBook,
+			isFavorite: false,
 			id: uuidv4()
 		}
 		dispatch(addBook(book))
