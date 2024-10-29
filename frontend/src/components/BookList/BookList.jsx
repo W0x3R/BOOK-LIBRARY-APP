@@ -36,6 +36,23 @@ export const BookList = () => {
 		return matchesFavorite && matchesTitle && matchesAuthor
 	})
 
+	const highLightMatch = (text, filter) => {
+		if (!filter) return text
+
+		const regex = new RegExp(`(${filter})`, "gi")
+		console.log(text.split(regex))
+		return text.split(regex).map((substr, i) => {
+			if (substr.toLowerCase() === filter.toLowerCase()) {
+				return (
+					<span key={i} className="highlight">
+						{substr}
+					</span>
+				)
+			}
+			return substr
+		})
+	}
+
 	return (
 		<div className="app-block book-list">
 			<h2>BookList</h2>
@@ -47,7 +64,8 @@ export const BookList = () => {
 						return (
 							<li key={book.id}>
 								<div className="book-info">
-									{++i}. {book.title} by <strong>{book.author}</strong>
+									{++i}. {highLightMatch(book.title, titleFilter)} by{" "}
+									<strong>{highLightMatch(book.author, authorFilter)}</strong>
 								</div>
 								<div className="book-actions">
 									<span onClick={() => handleToggleFavorite(book.id)}>
