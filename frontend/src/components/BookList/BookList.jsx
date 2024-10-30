@@ -64,11 +64,13 @@ export const BookList = () => {
 			) : (
 				<ul>
 					{filteredBooks.map((book, i) => {
+						console.log(book)
 						return (
 							<li key={book.id}>
 								<div className="book-info">
 									{++i}. {highLightMatch(book.title, titleFilter)} by{" "}
 									<strong>{highLightMatch(book.author, authorFilter)}</strong>
+									<span>{` (${book.src})`}</span>
 								</div>
 								<div className="book-actions">
 									<span onClick={() => handleToggleFavorite(book.id)}>
