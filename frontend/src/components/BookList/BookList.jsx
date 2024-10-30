@@ -64,7 +64,6 @@ export const BookList = () => {
 			) : (
 				<ul>
 					{filteredBooks.map((book, i) => {
-						console.log(book)
 						return (
 							<li key={book.id}>
 								<div className="book-info">
