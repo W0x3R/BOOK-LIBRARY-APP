@@ -3,7 +3,10 @@ import axios from "axios"
 import { createBookWithId } from "../../../utils/createBookWithId"
 import { setError } from "./errorSlice"
 
-const initialState = []
+const initialState = {
+	books: [],
+	isLoadingViaAPI: false
+}
 
 export const fetchBook = createAsyncThunk(
 	"books/fetchBook",
@@ -23,30 +26,45 @@ const bookSlice = createSlice({
 	initialState,
 	reducers: {
 		addBook: (state, action) => {
-			return [...state, action.payload]
+			state.books.push(action.payload)
 		},
 		deleteBook: (state, action) => {
-			return state.filter((book) => book.id !== action.payload)
+			return {
+				...state,
+				books: state.books.filter((book) => book.id !== action.payload)
+			}
 		},
 		toggleFavorite: (state, action) => {
-			return state.map((book) => {
-				return book.id === action.payload
-					? { ...book, isFavorite: !book.isFavorite }
-					: book
-			})
+			return {
+				...state,
+				books: state.books.map((book) => {
+					return book.id === action.payload
+						? { ...book, isFavorite: !book.isFavorite }
+						: book
+				})
+			}
 		}
 	},
 	extraReducers: (builder) => {
-		builder.addCase(fetchBook.fulfilled, (state, action) => {
-			if (action.payload.title && action.payload.author) {
-				state.push(createBookWithId(action.payload, "API"))
-			}
-		})
+		builder
+			.addCase(fetchBook.pending, (state) => {
+				state.isLoadingViaAPI = true
+			})
+			.addCase(fetchBook.fulfilled, (state, action) => {
+				state.isLoadingViaAPI = false
+				if (action.payload.title && action.payload.author) {
+					state.books.push(createBookWithId(action.payload, "API"))
+				}
+			})
+			.addCase(fetchBook.rejected, (state, action) => {
+				state.isLoadingViaAPI = action
+			})
 	}
 })
 
 export const { addBook, deleteBook, toggleFavorite } = bookSlice.actions
 
-export const selectBooks = (state) => state.books
+export const selectBooks = (state) => state.books.books
+export const selectIsLoadingViaAPI = (state) => state.books.isLoadingViaAPI
 
 export default bookSlice.reducer
